@@ -1,0 +1,38 @@
+Our main focus is to provide a secure channel for IoT devices which generally have limited computational power to communicate.
+
+First, we generate public and private keys at both client and server side. The use of random functions and elliptic curve cryptography is integrated in creation of the private key and the public key is derived from the private key generated. Then after authentication of each other's identities, a shared secret is generated for both of them to communicate securely.
+Steps to Derive Session Keys in the Code:
+Key Exchange (ECDH):
+
+The client and server perform an Elliptic Curve Diffie-Hellman (ECDH) exchange to compute a shared secret.
+This shared secret is derived.
+
+Derive Initial Session Key (HKDF):
+The shared secret is input to the HKDF (HMAC-based Key Derivation Function) to derive an initial session key:
+
+Fuzzy Extraction:
+The initial session key undergoes a fuzzy extraction process to add robustness against noise or variability:
+
+Final Session Key (XOR):
+The final session key is derived by performing a bitwise XOR between the initial session key and the fuzzy-extracted key:
+
+Outcome:
+The final session key is the secure session key used for subsequent encryption and decryption operations.
+
+the advantage of ECC is that it can use shorter keys to achieve equivalent or higher security levels.
+
+The general form of an elliptic curve over a field is:
+
+The curve should not have singularities (e.g., cusps or self-intersections). This is ensured by the condition:
+For ECC over finite fields (common in cryptography), the equation is written as:
+
+This modular arithmetic ensures that the elliptic curve operates in a finite and discrete domain, making it suitable for digital systems.
+Key generation in ECC involves selecting a private key and deriving the corresponding public key.
+
+After fuzzy extraction, the result is combined with the session key using an XOR operation:
+
+final_session_key = bytes(a ^ b for a, b in zip(shared_session_key, fuzzy_extracted_key))
+
+This step adds an extra layer of security, ensuring the final session key has characteristics of both the original session key and the fuzzy-extracted key, making it harder for an attacker to reconstruct.
+
+A shared secret is used for authentication and to produce keys for encryption, while a shared session key is used to encrypt data during a session
